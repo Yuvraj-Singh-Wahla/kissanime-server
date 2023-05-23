@@ -1,20 +1,23 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const { MongoClient, ServerApiVersion } = require('mongodb');
 const { addAnime, getAnime, getAllCharactersByAnimeId, addCharacter, addUser, isRegistered, addToWatchList, getWatchList } = require('./functions');
-
-db_connect().catch((err) => { console.log(err); });
-
-async function db_connect() {
-    await mongoose.connect(`mongodb://localhost:27017/kissanime`);
-
-    console.log("Database connected");
+require('dotenv').config();
 
 
+// db_connect().catch((err) => { console.log(err); });
 
-}
+// async function db_connect() {
+//     await mongoose.connect(`mongodb://localhost:27017/kissanime`);
 
-// mongoose.connect('mongodb+srv://kissanime:adminuse@clusteranime.okv5bh4.mongodb.net/?retryWrites=true&w=majority', {
+//     console.log("Database connected");
+
+
+
+// }
+
+// mongoose.connect('mongodb+srv://test:testp@clusteranime.okv5bh4.mongodb.net/?retryWrites=true&w=majority', {
 //   useNewUrlParser: true,
 //   useUnifiedTopology: true
 // })
@@ -24,6 +27,49 @@ async function db_connect() {
 // .catch((error) => {
 //   console.error('Error connecting to MongoDB Atlas:', error);
 // });
+
+// const uri = 'mongodb+srv://test:<testpz>@cluster0.twr0emo.mongodb.net/?retryWrites=true&w=majority'
+
+// MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, (err, client) => {
+//     if (err) {
+//       console.log('Error connecting to MongoDB Atlas:', err);
+//     } else {
+//       console.log('Connected to MongoDB Atlas successfully!');
+//       // Perform database operations here
+//       // client.close(); // Close the connection when done
+//     }
+//   });
+
+mongoose.connect(process.env.uri)
+.then(() => {
+    console.log("Database Connected");
+})
+.catch((err) => {
+    console.log('Error connecting to MongoDB: ', err);
+})
+
+// // Create a MongoClient with a MongoClientOptions object to set the Stable API version
+// const client = new MongoClient(uri, {
+//   serverApi: {
+//     version: ServerApiVersion.v1,
+//     strict: true,
+//     deprecationErrors: true,
+//   }
+// });
+
+// async function run() {
+//   try {
+//     // Connect the client to the server	(optional starting in v4.7)
+//     await client.connect();
+//     // Send a ping to confirm a successful connection
+//     await client.db("admin").command({ ping: 1 });
+//     console.log("Pinged your deployment. You successfully connected to MongoDB!");
+//   } finally {
+//     // Ensures that the client will close when you finish/error
+//     await client.close();
+//   }
+// }
+// run().catch(console.dir);
 
 
 const app = express();
@@ -136,4 +182,4 @@ app.post('/api/user/getWatchList', async (req, res) => {
     }
 })
 
-app.listen(3001);
+app.listen(process.env.port);
